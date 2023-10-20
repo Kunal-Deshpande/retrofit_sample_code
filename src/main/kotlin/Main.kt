@@ -1,7 +1,19 @@
-fun main(args: Array<String>) {
-    println("Hello World!")
+import restApi.NASAPics
+import util.RetrofitServiceGenerator
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+fun main() {
+    val nasaPics = RetrofitServiceGenerator.createService(NASAPics::class.java)
+
+    val response = nasaPics.planetaryAPOD().execute()
+
+    if (!response.isSuccessful) {
+        println("HTTP Status Code: ${response.code()}")
+        println(response.errorBody()?.string())
+        return
+    }
+
+    val planetary = response.body()
+    if (planetary != null) {
+        println(planetary)
+    }
 }
